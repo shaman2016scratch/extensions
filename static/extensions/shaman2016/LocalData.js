@@ -227,7 +227,7 @@
       let cookie = document.cookie.split("; "); let ret = []; for(let i = 0; i < cookie.length; i++) { ret.push(`${decodeURIComponent(cookie[i][0])}=${decodeURIComponent(cookie[i][1])}`) }; return ret
     }
     async ClearLocal(args) {
-      if (confirm('Are you sure you want to clear ALL the site's local storage? If you have addons installed, they will turn off, and the site will forget that you have seen some announcements like Compiler changes.')) {
+      if (confirm("Are you sure you want to clear ALL the site's local storage? If you have addons installed, they will turn off, and the site will forget that you have seen some announcements like Compiler changes.")) {
         localStorage.clear()
       }
     }
