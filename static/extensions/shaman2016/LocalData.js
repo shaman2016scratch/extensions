@@ -1,4 +1,4 @@
-// Name: Local Data Extension
+//  Name: Local Data Extension
 // ID: LocalDataByShaman2016
 // Description: An extension for interacting with cookies and with local storage.
 // By: SHAMAN2016 <https://scratch.mit.edu/users/SHAMAN2016/>
@@ -182,26 +182,34 @@
       };
     }
     async GetCookie(args) {
-      const Cookies = document.cookie.split("; ")
-      let naydeno = false
-      for(let i = 0; i < Cookies.length; i++) {
-        if (Cookies[i].split("=")[0] === args.cookie) {
-          naydeno = true
-          return Cookies[i].split("=")[1]
+      try {
+        const Cookies = document.cookie.split("; ")
+        let naydeno = false
+        for(let i = 0; i < Cookies.length; i++) {
+          if (Cookies[i].split("=")[0] === args.cookie) {
+            naydeno = true
+            return Cookies[i].split("=")[1]
+          }
         }
-      }
-      if (!naydeno) {
-        return ""
+        if (!naydeno) {
+          return ""
+        }
+      } catch (err) {
+        console.error(err); return err
       }
     }
     async GetLocalData(args) {
       return localStorage.getItem(args.key)
     }
     async SetCookie(args) {
-      if (args.secure) {
-        document.cookie = `${encodeURIComponent(args.name)}=${encodeURIComponent(args.value)}; max-age=${args.age}; path=${encodeURIComponent(args.path)}; domain=${args.domain}; secure`
-      } else {
-        document.cookie = `${encodeURIComponent(args.name)}=${encodeURIComponent(args.value)}; max-age=${args.age}; path=${encodeURIComponent(args.path)}; domain=${args.domain}`
+      try {
+        if (args.secure) {
+          document.cookie = `${encodeURIComponent(args.name)}=${encodeURIComponent(args.value)}; max-age=${args.age}; path=${encodeURIComponent(args.path)}; domain=${args.domain}; secure`
+        } else {
+          document.cookie = `${encodeURIComponent(args.name)}=${encodeURIComponent(args.value)}; max-age=${args.age}; path=${encodeURIComponent(args.path)}; domain=${args.domain}`
+        }
+      } catch (err) {
+        console.error(err);
       }
     }
     async SetLocalData(args) {
@@ -219,29 +227,47 @@
       let cookie = document.cookie.split("; "); let ret = []; for(let i = 0; i < cookie.length; i++) { ret.push(`${decodeURIComponent(cookie[i][0])}=${decodeURIComponent(cookie[i][1])}`) }; return ret
     }
     async ClearLocal(args) {
-      localStorage.clear()
+      if (confirm('Are you sure you want to clear ALL the site's local storage? If you have addons installed, they will turn off, and the site will forget that you have seen some announcements like Compiler changes.')) {
+        localStorage.clear()
+      }
     }
     async ClearEleLocal(args) {
       localStorage.removeItem(args.element);
     }
     async n8787LocalStorageSet(args) {
-      let i = localStorage.getItem("n8787LocalStorage")
-      i[args.db][args.room][args.name] = args.value
-      localStorage.setItem("n8787LocalStorage", i)
+      try {
+        let i = localStorage.getItem("n8787LocalStorage")
+        i[args.db][args.room][args.name] = args.value
+        localStorage.setItem("n8787LocalStorage", JSON.stringify(i))
+      } catch (err) {
+        console.error(err)
+      }
     }
     async n8787LocalStorageNewDB(args) {
-      let i = localStorage.getItem("n8787LocalStorage")
-      i[args.db] = {}
-      localStorage.setItem("n8787LocalStorage", i)
+      try {
+        let i = JSON.parse(localStorage.getItem("n8787LocalStorage"))
+        i[args.db] = {}
+        localStorage.setItem("n8787LocalStorage", JSON.stringify(i))
+      } catch (err) {
+        console.error(err)
+      }
     }
     async n8787LocalStorageNewRoom(args) {
-      let i = localStorage.getItem("n8787LocalStorage")
-      i[args.db][args.room] = {}
-      localStorage.setItem("n8787LocalStorage", i)
+      try {
+        let i = JSON.parse(localStorage.getItem("n8787LocalStorage"))
+        i[args.db][args.room] = {}
+        localStorage.setItem("n8787LocalStorage", JSON.stringify(i))
+      } catch (err) {
+        console.error(err)
+      }
     }
     async n8787LocalStorageGet(args) {
-      let i = localStorage.getItem("n8787LocalStorage")
-      return i[args.db][args.room][args.name]
+      try {
+        let i = JSON.parse(localStorage.getItem("n8787LocalStorage"))
+        return JSON.stringify(i[args.db][args.room][args.name])
+      } catch (err) {
+        console.error(err); return err
+      }
     }
   }
   Scratch.extensions.register(new LocalData());
